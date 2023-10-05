@@ -1,13 +1,11 @@
+/* eslint react/prop-types: 0 */
+
 import React, { useState } from 'react';
 
 const messages = ['Learn React ⚛️', 'Apply for jobs 💼', 'Invest your new income 🤑'];
 
 export default function App() {
-  return (
-    <div>
-      <Steps />
-    </div>
-  );
+  return <Steps />;
 }
 
 function Steps() {
@@ -38,15 +36,23 @@ function Steps() {
             Step {step}: {messages[step - 1]}
           </p>
           <div className="buttons">
-            <button onClick={handlePrevious} style={{ backgroundColor: '#7950f2', color: '#fff' }}>
-              Previous
-            </button>
-            <button onClick={handleNext} style={{ backgroundColor: '#7950f2', color: '#fff' }}>
-              Next
-            </button>
+            <Button background="#7950f2" color="#fff" text="Previous" onClick={handlePrevious}>
+              <span>👈</span> Previous
+            </Button>
+            <Button background="#7950f2" color="#fff" text="Next" onClick={handleNext}>
+              Next <span>👉</span>
+            </Button>
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+function Button({ background, color, onClick, children }) {
+  return (
+    <button onClick={onClick} style={{ backgroundColor: background, color: color }}>
+      {children}
+    </button>
   );
 }
