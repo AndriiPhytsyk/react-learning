@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const tempMovieData = [
   {
@@ -47,26 +47,61 @@ const tempWatchedData = [
   }
 ];
 
+const KEY = '8a8a2f8b';
+
 const average = (arr) => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const query = 'spiderman';
+
+  useEffect(function () {
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+        const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`);
+        if (!res.ok) throw new Error('Something went wrong');
+        const data = await res.json();
+        setMovies(data.Search);
+        if (data.Response === 'False') throw new Error('Movie not found');
+        console.log(data);
+      } catch (err) {
+        setIsError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMovies();
+  }, []);
 
   return (
     <>
       <Navbar>
-        {' '}
         <NumResults movies={movies} />
         <Search />
       </Navbar>
       <Main>
-        {' '}
-        <Box>
-          <MoviesList movies={movies} />
-        </Box>
+        {isLoading && <Loader />}
+        {isError && !isLoading && <ErrorMessage message={isError.message} />}
+        {!isLoading && !isError && (
+          <Box>
+            <MoviesList movies={movies} />
+          </Box>
+        )}
       </Main>
     </>
   );
+}
+
+function Loader() {
+  return <p className="loader">Loading...</p>;
+}
+
+function ErrorMessage({ message }) {
+  return <p className="error">{message}</p>;
 }
 
 function Main({ children }) {
@@ -207,7 +242,6 @@ function WatchedMovie({ movie }) {
 }
 
 function WatchedSummary({ watched }) {
-  console.log(watched);
   const avgImdbRating = average(watched.map((movie) => movie.imdbRating));
   const avgUserRating = average(watched.map((movie) => movie.userRating));
   const avgRuntime = average(watched.map((movie) => movie.runtime));
