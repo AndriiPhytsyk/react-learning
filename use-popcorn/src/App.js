@@ -54,11 +54,15 @@ const average = (arr) => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length
 
 export default function App() {
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [selectedMovieId, selectMovie] = useState(null);
+  const [watched, setWatched] = useState(function () {
+    const storedValue = localStorage.getItem('watched');
+    return JSON.parse(storedValue);
+  });
 
   function handleSelectMovie(movieId) {
     selectMovie(movieId === selectedMovieId ? null : movieId);
@@ -70,6 +74,10 @@ export default function App() {
 
   function handleDeleteMovie(id) {
     setWatched((movies) => movies.filter((movie) => movie.imbID !== id));
+  }
+
+  function handleClose() {
+    selectMovie(null);
   }
 
   useEffect(
@@ -109,9 +117,13 @@ export default function App() {
     [query]
   );
 
-  function handleClose() {
-    selectMovie(null);
-  }
+  useEffect(
+    function () {
+      console.log(watched);
+      localStorage.setItem('watched', JSON.stringify(watched));
+    },
+    [watched]
+  );
 
   return (
     <>
@@ -169,7 +181,7 @@ function Navbar({ children }) {
 function NumResults({ movies = [] }) {
   return (
     <p className="num-results">
-      Found <strong>{movies.length}</strong> results
+      Found <strong>{movies?.length}</strong> results
     </p>
   );
 }
