@@ -61,7 +61,6 @@ export default function App() {
   const [selectedMovieId, selectMovie] = useState(null);
 
   function handleSelectMovie(movieId) {
-    console.log(movieId);
     selectMovie(movieId === selectedMovieId ? null : movieId);
   }
 
@@ -70,7 +69,6 @@ export default function App() {
   }
 
   function handleDeleteMovie(id) {
-    console.log(id);
     setWatched((movies) => movies.filter((movie) => movie.imbID !== id));
   }
 
@@ -101,6 +99,8 @@ export default function App() {
         return;
       }
 
+      handleClose();
+
       fetchMovies();
       return function () {
         controller.abort();
@@ -108,14 +108,6 @@ export default function App() {
     },
     [query]
   );
-
-  useEffect(function () {
-    document.addEventListener('keydown', function (e) {
-      if (e.code === 'Escape') {
-        handleClose();
-      }
-    });
-  });
 
   function handleClose() {
     selectMovie(null);
@@ -298,6 +290,21 @@ function MovieDetails({ selectedMovieId, onClose, onAddWatched, watched }) {
     },
 
     [title]
+  );
+
+  useEffect(
+    function () {
+      function callback(e) {
+        if (e.code === 'Escape') {
+          onClose();
+        }
+      }
+      document.addEventListener('keydown', callback);
+      return function () {
+        document.removeEventListener('keydown', callback);
+      };
+    },
+    [onClose]
   );
 
   return (
