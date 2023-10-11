@@ -47,11 +47,13 @@ body {
   display: flex;
   gap: 2.4rem;
   justify-content: center;
+  align-items: flex-start;
 }
 
 .box {
   width: 42rem;
   max-width: 42rem;
+  min-height: 300px;
   background-color: var(--color-background-500);
   border-radius: 0.9rem;
   position: relative;
@@ -189,13 +191,12 @@ body {
 .btn-delete {
   position: absolute;
   right: 2.4rem;
-
+  color: #fff;
   height: 1.8rem;
   aspect-ratio: 1;
   border-radius: 50%;
   border: none;
   background-color: var(--color-red);
-  color: var(--color-background-900);
   font-size: 0.9rem;
   font-weight: bold;
   cursor: pointer;

@@ -119,7 +119,6 @@ export default function App() {
 
   useEffect(
     function () {
-      console.log(watched);
       localStorage.setItem('watched', JSON.stringify(watched));
     },
     [watched]
@@ -398,7 +397,9 @@ function WatchedMovie({ movie, onDeleteMovie }) {
           <span>⏳</span>
           <span>{movie.runtime} min</span>
         </p>
-        <button className="btn-delete" onClick={() => onDeleteMovie(movie.imbID)}></button>
+        <button className="btn-delete" onClick={() => onDeleteMovie(movie.imbID)}>
+          &#10005;
+        </button>
       </div>
     </li>
   );
